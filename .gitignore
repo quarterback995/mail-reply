@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+frontend/dist/
+*.egg-info/
+
+# Data directories (contains user data)
+backend/data/
+backend/chroma_db/
+backend/uploads/
+
+# Docker volumes
+hf_cache/
+
+# IDE
+.vscode/
+.idea/
+*.sw?
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Screenshots
+*.png
+*.jpg
+*.jpeg

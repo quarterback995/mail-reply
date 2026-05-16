@@ -1,0 +1,60 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: mail-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - mail-network
+
+  backend:
+    build: ./backend
+    container_name: mail-backend
+    restart: unless-stopped
+    expose:
+      - "8001"
+    env_file:
+      - ./backend/.env
+    environment:
+      - ENV_FILE_PATH=/app/.env
+      - HF_ENDPOINT=https://hf-mirror.com
+    volumes:
+      - ./backend/.env:/app/.env:ro
+      - ./backend/chroma_db:/app/chroma_db
+      - ./backend/uploads:/app/uploads
+      - ./backend/data:/app/data
+      - hf_cache:/root/.cache/huggingface
+    networks:
+      - mail-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  frontend:
+    build: ./frontend
+    container_name: mail-frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+    depends_on:
+      - backend
+    networks:
+      - mail-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+volumes:
+  hf_cache:
+
+networks:
+  mail-network:
+    driver: bridge
